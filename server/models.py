@@ -1,9 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
-
-#import db from app.py
-from server.app import db
+# Define db here as per assignment structure
+from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
 
 #episode model
 class Episode(db.Model, SerializerMixin):
@@ -50,6 +49,6 @@ class Appearance(db.Model, SerializerMixin):
     #Validation: Rating must be between 1 and 5 (inclusive)
     @validates('rating')
     def validate_rating(self, key, rating):
-        if not (1 <= value <=5):
+        if not (1 <= rating <= 5):
             raise ValueError('Rating must be between 1 and 5')
-        return value
+        return rating
