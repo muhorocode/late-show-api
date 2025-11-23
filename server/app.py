@@ -90,6 +90,25 @@ def delete_episode(id):
     # Return 204 No Content to indicate successful deletion
     return '', 204
 
+
+# GET /guests endpoint: Returns a list of all guests
+@app.route('/guests', methods=['GET'])
+def get_guests():
+    # Import the Guest model
+    from server.models import Guest
+
+    # Query all guests from the database
+    guests = Guest.query.all()
+
+    # Build a list of guest dictionaries for the JSON response
+    guests_list = [
+        {"id": g.id, "name": g.name, "occupation": g.occupation}
+        for g in guests
+    ]
+
+    # Return the list as JSON with status 200
+    return jsonify(guests_list), 200
+
 if __name__ == '__main__':
     # Run the app on port 5555
     app.run(port=5555, debug=True)
