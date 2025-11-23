@@ -39,7 +39,7 @@ def get_episodes():
     return jsonify(episodes_list), 200
 
 
-#Returns a single episode with its appearances and guest details
+# Returns a single episode with its appearances and guest details
 @app.route('/episodes/<int:id>', methods=['GET'])
 def get_episode(id):
     # Query the episode by ID
@@ -71,6 +71,24 @@ def get_episode(id):
         "number": episode.number,
         "appearances": appearances
     }), 200
+
+
+# DELETE:Deletes an episode and its appearances
+@app.route('/episodes/<int:id>', methods=['DELETE'])
+def delete_episode(id):
+    # Query the episode by ID
+    episode = Episode.query.get(id)
+    if not episode:
+        # If not found, return 404 with error message
+        return jsonify({"error": "Episode not found"}), 404
+
+    # Delete the episode
+    from server.models import db  #db import
+    db.session.delete(episode)
+    db.session.commit()
+
+    # Return 204 No Content to indicate successful deletion
+    return '', 204
 
 if __name__ == '__main__':
     # Run the app on port 5555
