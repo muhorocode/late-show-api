@@ -1,6 +1,5 @@
 from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
-# Define db here as per assignment structure
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 

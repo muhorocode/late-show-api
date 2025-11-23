@@ -1,5 +1,3 @@
-# server/seed.py
-
 from server.app import app, db
 from server.models import Episode, Guest, Appearance
 
