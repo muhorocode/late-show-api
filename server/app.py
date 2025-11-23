@@ -109,6 +109,63 @@ def get_guests():
     # Return the list as JSON with status 200
     return jsonify(guests_list), 200
 
+
+# POST /appearances endpoint: Creates a new appearance
+@app.route('/appearances', methods=['POST'])
+def create_appearance():
+    # Import required models
+    from flask import request
+    from server.models import Appearance, Episode, Guest, db
+
+    # Parse JSON data from the request body
+    data = request.get_json()
+
+    # Validate required fields
+    try:
+        rating = int(data.get('rating'))
+        episode_id = int(data.get('episode_id'))
+        guest_id = int(data.get('guest_id'))
+    except (TypeError, ValueError):
+        # If any field is missing or not an integer, return 400 error
+        return jsonify({"errors": ["Invalid input types"]}), 400
+
+    # Validate rating range
+    if not (1 <= rating <= 5):
+        return jsonify({"errors": ["Rating must be between 1 and 5"]}), 400
+
+    # Check if episode and guest exist
+    episode = Episode.query.get(episode_id)
+    guest = Guest.query.get(guest_id)
+    if not episode or not guest:
+        return jsonify({"errors": ["Episode or Guest not found"]}), 400
+
+    # Create and save the new appearance
+    appearance = Appearance(rating=rating, episode_id=episode_id, guest_id=guest_id)
+    db.session.add(appearance)
+    db.session.commit()
+
+    # Build the response with nested episode and guest info
+    response = {
+        "id": appearance.id,
+        "rating": appearance.rating,
+        "guest_id": appearance.guest_id,
+        "episode_id": appearance.episode_id,
+        "episode": {
+            "id": episode.id,
+            "date": episode.date,
+            "number": episode.number
+        },
+        "guest": {
+            "id": guest.id,
+            "name": guest.name,
+            "occupation": guest.occupation
+        }
+    }
+
+    # Return the created appearance with status 201
+    return jsonify(response), 201
+
+
 if __name__ == '__main__':
     # Run the app on port 5555
     app.run(port=5555, debug=True)
