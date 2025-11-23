@@ -1,0 +1,6 @@
+Flask==2.3.0
+Flask-SQLAlchemy==3.0.3
+Flask-Migrate==4.0.4
+Flask-RESTful==0.3.10
+SQLAlchemy-serializer==1.4.1
+pytest==7.3.1
